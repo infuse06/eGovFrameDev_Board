@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.go.negga.test.board.service.impl.BoardMapper">
+
+	<select id="selectBoardList" parameterType="boardVO" resultType="boardVO">
+		SELECT 
+			bno, title, content, wdate, bid
+		FROM 
+			(
+				SELECT 
+					bno, title, content, wdate, bid, row_number() OVER (ORDER BY bno DESC) as rNum
+				FROM 
+					board2
+			) mp
+		WHERE 
+			rNum BETWEEN #{startIndex} and #{endIndex}
+		ORDER 
+			BY bno DESC
+	</select>
+
+
+	<select id="selectBoardListCnt" parameterType="boardVO" resultType="int">
+		SELECT COUNT(bno) listCnt
+		FROM board2
+	</select>
+	
+	<insert id="insertBoard" parameterType="boardVO">
+		INSERT INTO 
+			board2(bno, title, content, wdate, bid) 
+		VALUES 
+			(seq_board2_bno.nextval, #{title}, #{content}, sysdate, #{bid})
+	</insert>
+	
+	<select id="getBoard" parameterType="boardVO" resultType="boardVO">
+		SELECT 
+			*
+		FROM 
+			board2
+		WHERE 
+			bid = #{bid} AND bno = #{bno}
+	</select>
+	
+	<update id="updateBoard" parameterType="boardVO" >
+		UPDATE 
+			board2 
+		SET 
+			title = #{title}, content = #{content} 
+		WHERE 
+			bid = #{id} AND bno = #{bno}
+	</update>
+	
+	<delete id="deleteBoard" parameterType="boardVO">
+		DELETE FROM
+			board2
+		WHERE
+			bid = #{id} AND bno = #{bno}
+	</delete>
+	
+	<select id="selectBno" parameterType="boardVO" resultType="String">
+		SELECT 
+			bno
+		FROM 
+			board2
+		WHERE 
+			bid = #{bid} AND title = #{title} AND content = #{content}
+	</select>
+</mapper>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.go.negga.test.board.service.impl.ReplyMapper">
+
+	<select id="readReply" resultType="replyVO">
+		SELECT 
+			bno, rno, rcontent, rid, rwdate, rrno
+		FROM 
+			reply 
+		ORDER BY rno, rrno
+	</select>
+	
+	<insert id="insertReply" parameterType="replyVO">
+		INSERT INTO 
+			reply(bno, rno, rcontent, rid, rwdate, rrno) 
+		VALUES 
+			(#{bno}, reply_seq.nextval, #{rcontent}, #{rid}, sysdate, 0)
+	</insert>
+	
+	<delete id="deleteReply" parameterType="replyVO">
+		DELETE FROM 
+			reply 
+		WHERE 
+			rid = #{id} 
+		AND 
+			rno = #{rno}
+	</delete>
+	
+	<update id="modifyReply" parameterType="replyVO">
+		UPDATE 
+			reply
+		SET 
+			rcontent = #{rcontent} 
+		WHERE 
+			rid = #{id} AND rno = #{rno}
+	</update>
+	
+	<insert id="repReply" parameterType="replyVO">
+		INSERT INTO 
+			reply(bno, rno, rcontent, rid, rwdate, rrno) 
+		VALUES 
+			(#{bno}, #{rno}, #{rcontent}, #{rid}, sysdate, seq_reply_rrno.nextval)
+	</insert>
+	
+	<delete id="deleteRepReply" parameterType="replyVO">
+		DELETE FROM 
+			reply 
+		WHERE 
+			rid = #{id} AND rrno = #{rrno}
+	</delete>
+	
+	<select id="selectCnt" parameterType="replyVO" resultType="int">
+		SELECT 
+			COUNT(rno) 
+		FROM 
+			reply 
+		WHERE rno = #{rno}
+	</select>
+	
+	<delete id="allDeleteReply" parameterType="String">
+		DELETE FROM
+			reply
+		WHERE bno = #{bno}
+	</delete>
+</mapper>
